@@ -6,6 +6,12 @@ A comprehensive FastMCP server that provides access to most Cisco Catalyst Cente
 
 This MCP server is for testing and learning purposes only and should not be used in production. It is purely around the art of what is possible and should not be used for anything but lab purposes.
 
+### Demo Video
+
+Watch a demonstration of the MCP server in action:
+
+🎥 [View Demo Video](https://app.vidcast.io/share/74a44822-0eaa-473d-8ea5-586572180013?playerMode=vidcast)
+
 
 
 ## Installation
