@@ -537,3 +537,258 @@ async def get_inventory_insight_device_link_mismatch(
         f"/dna/intent/api/v1/network-device/insight/{site_id}/device-link",
         **kwargs,
     )
+
+from typing import Any, Dict, Optional
+
+from client import client_manager
+from mcp_instance import mcp
+
+
+@mcp.tool()
+async def count_the_number_of_network_devices_with_filters(
+    request_body: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
+    """
+    Count the number of network devices with filters.
+
+    Args:
+        request_body: The request body containing the filter query.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {"json": request_body}
+    return await client.request(
+        "POST", "/dna/intent/api/v1/networkDevices/query/count", **kwargs
+    )
+
+
+@mcp.tool()
+async def get_the_details_of_physical_components_of_the_given_device(
+    deviceUuid: str, type: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Get the Details of Physical Components of the Given Device.
+
+    Args:
+        deviceUuid: The unique identifier (UUID) of the device.
+        type: The type of equipment to fetch (e.g., PowerSupply, Fan, Chassis). If omitted, all equipment is returned.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {}
+    params = {}
+    if type is not None:
+        params["type"] = type
+    if params:
+        kwargs["params"] = params
+
+    return await client.request(
+        "GET", f"/dna/intent/api/v1/network-device/{deviceUuid}/equipment", **kwargs
+    )
+
+
+@mcp.tool()
+async def get_device_config_by_id(
+    networkDeviceId: str,
+) -> Optional[Dict[str, Any]]:
+    """
+    Get Device Config by Id.
+
+    Args:
+        networkDeviceId: The unique identifier of the network device.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    return await client.request(
+        "GET", f"/dna/intent/api/v1/network-device/{networkDeviceId}/config"
+    )
+
+
+@mcp.tool()
+async def update_interface_details(
+    interfaceUuid: str,
+    request_body: Dict[str, Any],
+    deploymentMode: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """
+    Update Interface details.
+
+    Args:
+        interfaceUuid: The unique identifier (UUID) of the interface.
+        request_body: The request body containing updates for description, VLAN, admin status, etc.
+        deploymentMode: Set to 'Preview' to see changes without pushing, or 'Deploy' to push to the device.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {"json": request_body}
+    params = {}
+    if deploymentMode is not None:
+        params["deploymentMode"] = deploymentMode
+    if params:
+        kwargs["params"] = params
+
+    return await client.request(
+        "PUT", f"/dna/intent/api/v1/interface/{interfaceUuid}", **kwargs
+    )
+
+
+@mcp.tool()
+async def get_resync_interval_for_the_network_device(
+    id: str,
+) -> Optional[Dict[str, Any]]:
+    """
+    Get resync interval for the network device.
+
+    Args:
+        id: The unique identifier of the network device.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    return await client.request(
+        "GET", f"/dna/intent/api/v1/networkDevices/{id}/resyncIntervalSettings"
+    )
+
+
+@mcp.tool()
+async def update_resync_interval_for_the_network_device(
+    id: str, request_body: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
+    """
+    Update resync interval for the network device.
+
+    Args:
+        id: The unique identifier of the network device.
+        request_body: The request body containing the new interval. Set to 0 to disable, or null to use global settings.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {"json": request_body}
+    return await client.request(
+        "PUT",
+        f"/dna/intent/api/v1/networkDevices/{id}/resyncIntervalSettings",
+        **kwargs,
+    )
+
+
+@mcp.tool()
+async def legit_operations_for_interface(
+    interfaceUuid: str,
+) -> Optional[Dict[str, Any]]:
+    """
+    Legit operations for interface.
+
+    Args:
+        interfaceUuid: The unique identifier (UUID) of the interface.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    return await client.request(
+        "GET", f"/dna/intent/api/v1/interface/{interfaceUuid}/legit-operation"
+    )
+
+
+@mcp.tool()
+async def get_device_config_count() -> Optional[Dict[str, Any]]:
+    """
+    Get Device Config Count.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    return await client.request("GET", "/dna/intent/api/v1/network-device/config/count")
+
+
+@mcp.tool()
+async def retrieves_the_total_number_of_dhcp_services_for_given_set_of_complex_filters(
+    request_body: Dict[str, Any], x_caller_id: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Retrieves the total number of DHCP Services for given set of complex filters.
+
+    Args:
+        request_body: The request body containing complex filters for the query.
+        x_caller_id: Optional caller ID to trace the origin of API calls.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {"json": request_body}
+    headers = {}
+    if x_caller_id is not None:
+        headers["X-CALLER-ID"] = x_caller_id
+    if headers:
+        kwargs["headers"] = headers
+
+    return await client.request(
+        "POST", "/dna/data/api/v1/dhcpServices/query/count", **kwargs
+    )
+
+
+@mcp.tool()
+async def get_device_interface_vlans(
+    id: str, interfaceType: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Get Device Interface VLANs.
+
+    Args:
+        id: The unique identifier (UUID) of the device.
+        interfaceType: The type of interface to query for VLANs.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {}
+    params = {}
+    if interfaceType is not None:
+        params["interfaceType"] = interfaceType
+    if params:
+        kwargs["params"] = params
+
+    return await client.request(
+        "GET", f"/dna/intent/api/v1/network-device/{id}/vlan", **kwargs
+    )
+
+
+@mcp.tool()
+async def get_details_of_a_single_network_device(
+    id: str, views: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Get details of a single network device.
+
+    Args:
+        id: The unique identifier for the network device.
+        views: Specific views to fetch (e.g., BASIC, RESYNC, USER_DEFINED_FIELDS). Comma-separated for multiple.
+    """
+    client = client_manager.get_client()
+    if not client:
+        return {"error": "Not connected. Use connect() first."}
+
+    kwargs = {}
+    params = {}
+    if views is not None:
+        params["views"] = views
+    if params:
+        kwargs["params"] = params
+
+    return await client.request(
+        "GET", f"/dna/intent/api/v1/networkDevices/{id}", **kwargs
+    )

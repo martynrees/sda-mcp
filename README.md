@@ -1,72 +1,79 @@
-# Cisco Catalyst Center FastMCP Server
+# Cisco Catalyst Center MCP Server
 
-A comprehensive FastMCP server that provides access to most Cisco Catalyst Center Intent API endpoints for SDA (Software-Defined Access) operations.
+A comprehensive MCP server for Cisco Catalyst Center, providing access to the full suite of Catalyst Center Intent APIs—including, but not limited to, SDA (Software-Defined Access), Assurance, Site Management, Device Management, and more.
+
+---
+
+**Credit:** This project is inspired by the initial work of [Martyn Rees](https://github.com/martynrees/sda-mcp) (Author: Martyn Rees).
+
+---
 
 ## Overview
 
-This MCP server is for testing and learning purposes only and should not be used in production. It is purely around the art of what is possible and should not be used for anything but lab purposes.
+This MCP server is designed for testing, learning, and automation with Cisco Catalyst Center APIs. It is not intended for production use. Use it in lab or development environments only.
 
-### Demo Video
+## Features
 
-Watch a demonstration of the MCP server in action:
+- Access most Catalyst Center Intent APIs (SDA, Assurance, Sites, Devices, etc.)
+- Easily extensible for new API endpoints
+- Integrates with VS Code and GitHub Copilot Chat via MCP protocol
+- Cross-platform support (Windows, macOS, Linux)
+
+## Demo Video
 
 🎥 [View Demo Video](https://app.vidcast.io/share/74a44822-0eaa-473d-8ea5-586572180013?playerMode=vidcast)
-
-
 
 ## Installation
 
 ### Using uv (Recommended)
 
 1. Install uv if you haven't already:
-```bash
-# On macOS and Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```bash
+   # On macOS and Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# On Windows
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+   # On Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Or using pip
-pip install uv
-```
+   # Or using pip
+   pip install uv
+   ```
 
 2. Clone the repository and navigate to the project directory:
-```bash
-git clone <repository-url>
-cd SDA-MCP
-```
+   ```bash
+   git clone <repository-url>
+   cd cc-mcp
+   ```
 
 3. Install dependencies:
-```bash
-uv sync
-```
+   ```bash
+   uv sync
+   ```
 
-4. Run the FastMCP server:
-```bash
-uv run python main.py
-```
+4. Run the MCP server:
+   ```bash
+   uv run python main.py
+   ```
 
-**Note:** The server will start and wait for MCP client connections via stdio. This is normal behavior for MCP servers.
+**Note:** The server will start and wait for MCP client connections via stdio. This is normal for MCP servers.
 
 ### Alternative Installation Methods
 
-**Using pip (traditional):**
-```bash
-pip install -r requirements.txt
-python main.py
-```
-
-**Using the setup script:**
-```bash
-chmod +x setup.sh
-./setup.sh
-```
-
-**Using make (if you have make installed):**
-```bash
-make install  # Install dependencies
-make run      # Run the server
-```
+- **Using pip:**
+  ```bash
+  pip install -r requirements.txt
+  python main.py
+  ```
+- **Using the setup script:**
+  ```bash
+  chmod +x setup.sh
+  ./setup.sh
+  ```
+- **Using make:**
+  ```bash
+  make install  # Install dependencies
+  make run      # Run the server
+  ```
 
 ## VS Code Integration
 
@@ -79,58 +86,74 @@ To use this MCP server with VS Code and GitHub Copilot, follow these steps:
    - Type "Preferences: Open User Settings (JSON)"
    - Select the option to open settings.json
 
-2. Add or update the `mcpServers` configuration:
+2. Add or update the `mcpServers` configuration. Example configurations:
 
+**Windows Example:**
 ```json
 {
   "mcpServers": {
-    "sda": {
-      "command": "/path/to/your/project/.venv/bin/python",
-      "args": ["/path/to/your/project/main.py"],
-      "cwd": "/path/to/your/project"
+    "cc-mcp": {
+      "type": "stdio",
+      "command": "D:\\Workspace\\Ext_APIs\\CatC315\\cc-mcp\\.venv\\Scripts\\python.exe",
+      "args": ["D:\\Workspace\\Ext_APIs\\CatC315\\cc-mcp\\main.py"]
     }
   }
 }
 ```
 
-**Example paths:**
-- **command**: `/Users/username/Documents/SDA-MCP/.venv/bin/python`
-- **args**: `["/Users/username/Documents/SDA-MCP/main.py"]`
-- **cwd**: `/Users/username/Documents/SDA-MCP`
+**macOS/Linux Example:**
+```json
+{
+  "mcpServers": {
+    "cc-mcp": {
+      "type": "stdio",
+      "command": "/Users/username/Documents/cc-mcp/.venv/bin/python",
+      "args": ["/Users/username/Documents/cc-mcp/main.py"],
+      "cwd": "/Users/username/Documents/cc-mcp"
+    }
+  }
+}
+```
 
-**Note:** Replace `/path/to/your/project` with the actual path to your SDA-MCP project directory, and ensure the virtual environment path matches your setup.
+**Note:** Adjust the paths to match your project and virtual environment locations. On Windows, the `cwd` field is not required.
 
 ### 2. Start the MCP Server in VS Code
 
-1. **Restart VS Code** after adding the configuration to ensure the MCP server settings are loaded
+1. **Restart VS Code** after adding the configuration to ensure the MCP server settings are loaded.
 
 2. **Connect to Catalyst Center** using GitHub Copilot:
    - Open GitHub Copilot Chat in VS Code
-   - Use the `@sda` mention to access SDA-specific tools
+   - Use the `@cc-mcp` mention to access Catalyst Center tools
    - First, connect to your Catalyst Center instance:
      ```
-     @sda connect to https://your-catalyst-center-ip username password
+     @cc-mcp connect to https://your-catalyst-center-ip username password
      ```
 
-3. **Verify Connection**:
-   - You can test the connection and available tools by asking:
+3. **Verify Connection:**
+   - Test the connection and available tools:
      ```
-     @sda what tools are available?
+     @cc-mcp what tools are available?
      ```
    - Or get network devices:
      ```
-     @sda get network devices
+     @cc-mcp get network devices
      ```
 
 ### 3. Using the MCP Tools
 
-Once connected, you can use various SDA tools through GitHub Copilot Chat:
+Once connected, you can use various Catalyst Center tools through GitHub Copilot Chat:
 
-- **Get fabric sites**: `@sda get fabric sites`
-- **Get network devices**: `@sda get network devices`
-- **Get virtual networks**: `@sda get layer 3 virtual networks`
-- **Add fabric site**: `@sda add fabric site with site ID xyz`
-- **And many more SDA operations...**
+- **Get fabric sites:** `@cc-mcp get fabric sites`
+- **Get network devices:** `@cc-mcp get network devices`
+- **Get virtual networks:** `@cc-mcp get layer 3 virtual networks`
+- **Add fabric site:** `@cc-mcp add fabric site with site ID xyz`
+- **Get assurance health:** `@cc-mcp get assurance health`
+- **Get site hierarchy:** `@cc-mcp get site hierarchy`
+- **And many more Catalyst Center operations...`
 
-The MCP server will automatically start when VS Code loads and will be available through the `@sda` mention in GitHub Copilot Chat.
+The MCP server will automatically start when VS Code loads and will be available through the `@cc-mcp` mention in GitHub Copilot Chat.
+
+---
+
+**Credit:** Initial idea and inspiration from [Martyn Rees](https://github.com/martynrees/sda-mcp) (Author: Martyn Rees).
 
