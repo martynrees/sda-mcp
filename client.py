@@ -62,8 +62,7 @@ class CatalystCenterClient:
                 response.raise_for_status()
                 return response.json()
             except httpx.HTTPStatusError as e:
-                if e.response.status_code == 401:
-                    # Token expired, try to re-authenticate
+                if e.response.status_code == 401:                    # Token expired, try to re-authenticate
                     if await self.authenticate():
                         # Update headers with new token and retry
                         if "headers" in kwargs:
@@ -76,5 +75,35 @@ class CatalystCenterClient:
                 return None
 
 
-# Client instance
+class ClientManager:
+    """Singleton client manager to maintain session state."""
+    _instance = None
+    _client = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def set_client(self, client: CatalystCenterClient):
+        """Set the active client instance."""
+        self._client = client
+
+    def get_client(self) -> Optional[CatalystCenterClient]:
+        """Get the active client instance."""
+        return self._client
+
+    def clear_client(self):
+        """Clear the client instance."""
+        self._client = None
+
+    def is_connected(self) -> bool:
+        """Check if client is connected and has valid token."""
+        return self._client is not None and self._client.token is not None
+
+
+# Global client manager instance
+client_manager = ClientManager()
+
+# Backward compatibility - deprecated, use client_manager instead
 client = None

@@ -1,6 +1,7 @@
 from mcp_instance import mcp  # Import the shared instance
-from sda import *
-from task import *
+from apis.sda import *
+from apis.task import *
+from apis.devices import *
 from client import *
 
 

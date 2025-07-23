@@ -59,7 +59,7 @@ __all__ = [
     "add_vn_in_fabric",
     "get_vn_from_sda_fabric",
     "delete_vn_from_sda_fabric",
-    "re__provision_wired_device",
+    "re_provision_wired_device",
     "provision_wired_device",
     "get_provisioned_wired_device",
     "get_virtual_network_summary",

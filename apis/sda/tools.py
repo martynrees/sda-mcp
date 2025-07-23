@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
 from mcp_instance import mcp  # Import the shared instance
-from client import CatalystCenterClient, client
+from client import CatalystCenterClient, client_manager
 
 
 @mcp.tool()
@@ -13,9 +13,9 @@ async def connect(base_url: str, username: str, password: str) -> str:
         username: Username for authentication
         password: Password for authentication
     """
-    global client
     client = CatalystCenterClient(base_url, username, password)
     if await client.authenticate():
+        client_manager.set_client(client)
         return "Successfully connected to Cisco Catalyst Center"
     return "Failed to connect to Cisco Catalyst Center"
 
@@ -32,7 +32,7 @@ async def get_fabric_devices_layer2_handoffs_count(
         fabricId: ID of the fabric this device belongs to.
         networkDeviceId: Network device ID of the fabric device.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -59,7 +59,7 @@ async def sda_fabric_sites_readiness(
         order: Whether ascending or descending order should be used to sort the response.
         sortBy: Sort results by the fabric site name.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -81,7 +81,7 @@ async def get_fabric_site_count() -> Optional[Dict[str, Any]]:
     Returns the count of fabric sites that match the provided query parameters.
 
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -114,7 +114,7 @@ async def get_anycast_gateways(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -150,7 +150,7 @@ async def add_anycast_gateways(request_body: Dict[str, Any]) -> Optional[Dict[st
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -166,7 +166,7 @@ async def get_fabric_zone_count() -> Optional[Dict[str, Any]]:
     Returns the count of fabric zones that match the provided query parameters.
 
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -183,7 +183,7 @@ async def update_layer2_virtual_networks(request_body: Dict[str, Any]) -> Option
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -217,7 +217,7 @@ async def get_layer2_virtual_networks(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -263,7 +263,7 @@ async def delete_layer2_virtual_networks(
         trafficType: The traffic type of the layer 2 virtual network.
         associatedLayer3VirtualNetworkName: Name of the associated layer 3 virtual network.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -293,7 +293,7 @@ async def add_layer2_virtual_networks(request_body: Dict[str, Any]) -> Optional[
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -316,7 +316,7 @@ async def get_fabric_devices_layer3_handoffs_with_sda_transit(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -377,7 +377,7 @@ async def read_list_of_fabric_sites_with_their_health_summary(
             siteHierarchy: The full hierarchical breakdown of the site tree starting from Global site name and ending with the specific site name. The Root site is named "Global" (Ex. `Global/AreaName/BuildingName/FloorName`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*/San*, */San, /San*`          Examples:          `?siteHierarchy=Global/AreaName/BuildingName/FloorName` (single siteHierarchy requested)          `?siteHierarchy=Global/AreaName/BuildingName/FloorName&siteHierarchy=Global/AreaName2/BuildingName2/FloorName2` (multiple siteHierarchies requested)
             siteHierarchyId: The full hierarchy breakdown of the site tree in id form starting from Global site UUID and ending with the specific site UUID. (Ex. `globalUuid/areaUuid/buildingUuid/floorUuid`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*uuid*, *uuid, uuid*`          Examples:          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid `(single siteHierarchyId requested)          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid&siteHierarchyId=globalUuid/areaUuid2/buildingUuid2/floorUuid2` (multiple siteHierarchyIds requested)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -430,7 +430,7 @@ async def get_layer3_virtual_networks(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -460,7 +460,7 @@ async def delete_layer3_virtual_networks(virtualNetworkName: Optional[str] = Non
     Args:
         virtualNetworkName: Name of the layer 3 virtual network.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -482,7 +482,7 @@ async def add_layer3_virtual_networks(request_body: Dict[str, Any]) -> Optional[
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -518,7 +518,7 @@ async def read_virtual_network_with_its_health_summary_from_id(
             attribute: The interested fields in the request. For valid attributes, verify the documentation.
             view: The specific summary view being requested. This is an optional parameter which can be passed to get one or more of the specific health data summaries associated with virtual networks.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -556,7 +556,7 @@ async def get_port_assignment_count(
         dataVlanName: Data VLAN name of the port assignment.
         voiceVlanName: Voice VLAN name of the port assignment.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -590,7 +590,7 @@ async def get_pending_fabric_events(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -616,7 +616,7 @@ async def reprovision_devices(request_body: Dict[str, Any]) -> Optional[Dict[str
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -634,7 +634,7 @@ async def provision_devices(request_body: Dict[str, Any]) -> Optional[Dict[str, 
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -662,7 +662,7 @@ async def get_provisioned_devices(
         offset: Starting record for pagination.
         limit: Maximum number of devices to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -702,7 +702,7 @@ async def get_layer2_virtual_network_count(
         trafficType: The traffic type of the layer 2 virtual network.
         associatedLayer3VirtualNetworkName: Name of the associated layer 3 virtual network.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -732,7 +732,7 @@ async def update_fabric_devices(request_body: Dict[str, Any]) -> Optional[Dict[s
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -761,7 +761,7 @@ async def get_fabric_devices(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -791,7 +791,7 @@ async def add_fabric_zone(request_body: Dict[str, Any]) -> Optional[Dict[str, An
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -814,7 +814,7 @@ async def get_fabric_zones(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -842,7 +842,7 @@ async def update_fabric_zone(request_body: Dict[str, Any]) -> Optional[Dict[str,
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -891,7 +891,7 @@ async def get_fabric_site_trend_analytics(
             order: The sort order of the field ascending or descending.
             attribute:  The interested fields in the request. For valid attributes, verify the documentation.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -926,7 +926,7 @@ async def readiness_status_for_a_fabric_site(id: str, order: Optional[str] = Non
         id: Sda fabric site id.
         order: Whether ascending or descending order should be used to sort the response.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -950,7 +950,7 @@ async def add_fabric_site(request_body: Dict[str, Any]) -> Optional[Dict[str, An
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -968,7 +968,7 @@ async def update_fabric_site(request_body: Dict[str, Any]) -> Optional[Dict[str,
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -991,7 +991,7 @@ async def get_fabric_sites(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1022,7 +1022,7 @@ async def get_layer3_virtual_networks_count(
         fabricId: ID of the fabric the layer 3 virtual network is assigned to.
         anchoredSiteId: Fabric ID of the fabric site the layer 3 virtual network is anchored at.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1050,7 +1050,7 @@ async def get_fabric_devices_count(
         networkDeviceId: Network device ID of the fabric device.
         deviceRoles: Device roles of the fabric device. Allowed values are [CONTROL_PLANE_NODE, EDGE_NODE, BORDER_NODE, WIRELESS_CONTROLLER_NODE, EXTENDED_NODE].
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1111,7 +1111,7 @@ async def read_list_of_virtual_networks_with_their_health_summary(
             siteHierarchy: The full hierarchical breakdown of the site tree starting from Global site name and ending with the specific site name. The Root site is named "Global" (Ex. `Global/AreaName/BuildingName/FloorName`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*/San*, */San, /San*`          Examples:          `?siteHierarchy=Global/AreaName/BuildingName/FloorName` (single siteHierarchy requested)          `?siteHierarchy=Global/AreaName/BuildingName/FloorName&siteHierarchy=Global/AreaName2/BuildingName2/FloorName2` (multiple siteHierarchies requested)
             SiteHierarchyId: The full hierarchy breakdown of the site tree in id form starting from Global site UUID and ending with the specific site UUID. (Ex. `globalUuid/areaUuid/buildingUuid/floorUuid`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*uuid*, *uuid, uuid*`          Examples:          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid `(single siteHierarchyId requested)          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid&siteHierarchyId=globalUuid/areaUuid2/buildingUuid2/floorUuid2` (multiple siteHierarchyIds requested)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1159,7 +1159,7 @@ async def get_multicast(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1208,7 +1208,7 @@ async def read_virtual_networks_count(
             siteHierarchy: The full hierarchical breakdown of the site tree starting from Global site name and ending with the specific site name. The Root site is named "Global" (Ex. `Global/AreaName/BuildingName/FloorName`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*/San*, */San, /San*`          Examples:          `?siteHierarchy=Global/AreaName/BuildingName/FloorName` (single siteHierarchy requested)          `?siteHierarchy=Global/AreaName/BuildingName/FloorName&siteHierarchy=Global/AreaName2/BuildingName2/FloorName2` (multiple siteHierarchies requested)
             siteHierarchyId: The full hierarchy breakdown of the site tree in id form starting from Global site UUID and ending with the specific site UUID. (Ex. `globalUuid/areaUuid/buildingUuid/floorUuid`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*uuid*, *uuid, uuid*`          Examples:          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid `(single siteHierarchyId requested)          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid&siteHierarchyId=globalUuid/areaUuid2/buildingUuid2/floorUuid2` (multiple siteHierarchyIds requested)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1274,7 +1274,7 @@ async def get_virtual_network_trend_analytics(
             order: The sort order of the field ascending or descending.
             attribute: The interested fields in the request. For valid attributes, verify the documentation.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1322,7 +1322,7 @@ async def get_port_assignments(
         offset: Starting record for pagination.
         limit: Maximum number of records to return. The maximum number of objects supported in a single request is 500.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1356,7 +1356,7 @@ async def add_port_assignments(request_body: Dict[str, Any]) -> Optional[Dict[st
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1374,7 +1374,7 @@ async def update_port_assignments(request_body: Dict[str, Any]) -> Optional[Dict
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1411,7 +1411,7 @@ async def read_fabric_site_count(
             siteHierarchy: The full hierarchical breakdown of the site tree starting from Global site name and ending with the specific site name. The Root site is named "Global" (Ex. `Global/AreaName/BuildingName/FloorName`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*/San*, */San, /San*`          Examples:          `?siteHierarchy=Global/AreaName/BuildingName/FloorName` (single siteHierarchy requested)          `?siteHierarchy=Global/AreaName/BuildingName/FloorName&siteHierarchy=Global/AreaName2/BuildingName2/FloorName2` (multiple siteHierarchies requested)
             siteHierarchyId: The full hierarchy breakdown of the site tree in id form starting from Global site UUID and ending with the specific site UUID. (Ex. `globalUuid/areaUuid/buildingUuid/floorUuid`)          This field supports wildcard asterisk (`*`) character search support. E.g. `*uuid*, *uuid, uuid*`          Examples:          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid `(single siteHierarchyId requested)          `?siteHierarchyId=globalUuid/areaUuid/buildingUuid/floorUuid&siteHierarchyId=globalUuid/areaUuid2/buildingUuid2/floorUuid2` (multiple siteHierarchyIds requested)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1451,7 +1451,7 @@ async def get_anycast_gateway_count(
         vlanName: VLAN name of the anycast gateways.
         vlanId: VLAN ID of the anycast gateways. The allowed range for vlanId is [2-4093] except for reserved VLANs [1002-1005], 2046, and 4094.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1482,7 +1482,7 @@ async def get_provisioned_devices_count(siteId: Optional[str] = None) -> Optiona
     Args:
         siteId: ID of the site hierarchy.
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1502,7 +1502,7 @@ async def get_edge_device_from_sda_fabric(deviceManagementIpAddress: str) -> Opt
     Args:
         deviceManagementIpAddress: deviceManagementIpAddress
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1522,7 +1522,7 @@ async def get_device_info_from_sda_fabric(deviceManagementIpAddress: str) -> Opt
     Args:
         deviceManagementIpAddress: deviceManagementIpAddress
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1542,7 +1542,7 @@ async def add_ip_pool_in_sda_virtual_network(request_body: Dict[str, Any]) -> Op
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1562,7 +1562,7 @@ async def delete_ip_pool_from_sda_virtual_network(
         virtualNetworkName: virtualNetworkName
         ipPoolName: ipPoolName
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1590,7 +1590,7 @@ async def get_ip_pool_from_sda_virtual_network(
         virtualNetworkName: virtualNetworkName
         ipPoolName: ipPoolName. Note: Use vlanName as a value for this parameter if same ip pool is assigned to multiple virtual networks (e.g.. ipPoolName=vlan1021)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1616,7 +1616,7 @@ async def get_site_from_sda_fabric(siteNameHierarchy: str) -> Optional[Dict[str,
     Args:
         siteNameHierarchy: Site Name Hierarchy
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1636,7 +1636,7 @@ async def add_site_in_sda_fabric(request_body: Dict[str, Any]) -> Optional[Dict[
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1652,7 +1652,7 @@ async def get_multicast_details_from_sda_fabric(siteNameHierarchy: str) -> Optio
     Args:
         siteNameHierarchy: fabric site name hierarchy
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1674,7 +1674,7 @@ async def add_vn_in_fabric(request_body: Dict[str, Any]) -> Optional[Dict[str, A
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1693,7 +1693,7 @@ async def get_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: str
         virtualNetworkName: virtualNetworkName
         siteNameHierarchy: siteNameHierarchy
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1718,7 +1718,7 @@ async def delete_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: 
         virtualNetworkName: virtualNetworkName
         siteNameHierarchy: siteNameHierarchy
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1734,13 +1734,13 @@ async def delete_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: 
 
 
 @mcp.tool()
-async def re__provision_wired_device(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+async def re_provision_wired_device(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Re-Provision Wired Device
 
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1756,7 +1756,7 @@ async def provision_wired_device(request_body: Dict[str, Any]) -> Optional[Dict[
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1772,7 +1772,7 @@ async def get_provisioned_wired_device(deviceManagementIpAddress: str) -> Option
     Args:
         deviceManagementIpAddress: deviceManagementIpAddress
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1792,7 +1792,7 @@ async def get_virtual_network_summary(siteNameHierarchy: str) -> Optional[Dict[s
     Args:
         siteNameHierarchy: Complete fabric siteNameHierarchy Path
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1814,7 +1814,7 @@ async def add_port_assignment_for_user_device_in_sda_fabric(request_body: Dict[s
     Args:
         request_body: Request body data
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1835,7 +1835,7 @@ async def get_port_assignment_for_user_device_in_sda_fabric(
         deviceManagementIpAddress: deviceManagementIpAddress
         interfaceName: interfaceName
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1857,7 +1857,7 @@ async def get_control_plane_device_from_sda_fabric(deviceManagementIpAddress: st
     Args:
         deviceManagementIpAddress: deviceManagementIpAddress
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -1873,6 +1873,7 @@ async def get_control_plane_device_from_sda_fabric(deviceManagementIpAddress: st
 @mcp.tool()
 async def get_sites() -> str:
     """Get list of sites in the network."""
+    client = client_manager.get_client()
     if not client:
         return "Not connected to Catalyst Center. Use connect() first."
 
@@ -1907,6 +1908,7 @@ async def get_network_devices(limit: int = 10, offset: int = 1) -> str:
         limit: Maximum number of devices to return (default: 10)
         offset: Pagination offset (default: 1)
     """
+    client = client_manager.get_client()
     if not client:
         return "Not connected to Catalyst Center. Use connect() first."
 

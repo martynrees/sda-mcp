@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
-from mcp_instance import mcp  # Import the shared instance
-from client import client
+from mcp_instance import mcp
+from client import client_manager
 
 # Task Management Tools
 
@@ -64,7 +64,7 @@ async def execute_and_monitor_task(
         max_wait_seconds: Maximum time to wait if auto_wait is True
         *args, **kwargs: Arguments to pass to the operation function
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return "Error: Not connected. Use connect() first."
 
@@ -108,7 +108,7 @@ async def get_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
     Args:
         task_id: The unique identifier for the task
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -144,7 +144,7 @@ async def get_tasks(
         sort_by: Property to sort by
         order: Sort order (ascending or descending)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return {"error": "Not connected. Use connect() first."}
 
@@ -185,7 +185,7 @@ async def check_task_status(task_id: str) -> str:
     Args:
         task_id: The unique identifier for the task
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return "Error: Not connected. Use connect() first."
 
@@ -225,19 +225,20 @@ async def check_task_status(task_id: str) -> str:
 
     # Build status summary
     summary = f"""
-Task Status Summary:
--------------------
-Task ID: {task_id_actual}
-Status: {status}
-Service Type: {service_type}
-Progress: {progress}
-{duration}
-"""
+                Task Status Summary:
+                -------------------
+                Task ID: {task_id_actual}
+                Status: {status}
+                Service Type: {service_type}
+                Progress: {progress}
+                {duration}
+                """
 
     if is_error and (failure_reason or error_code):
-        summary += f"""
-Error Details:
---------------"""
+        summary += """
+                    Error Details:
+                    --------------
+                    """
         if error_code:
             summary += f"\nError Code: {error_code}"
         if failure_reason:
@@ -260,7 +261,7 @@ async def wait_for_task_completion(task_id: str, max_wait_seconds: int = 300, ch
     import asyncio
     import time
 
-    global client
+    client = client_manager.get_client()
     if not client:
         return "Error: Not connected. Use connect() first."
 
@@ -300,7 +301,7 @@ async def get_recent_failed_tasks(limit: int = 10) -> str:
     Args:
         limit: Maximum number of failed tasks to return (default: 10)
     """
-    global client
+    client = client_manager.get_client()
     if not client:
         return "Error: Not connected. Use connect() first."
 
@@ -333,12 +334,12 @@ async def get_recent_failed_tasks(limit: int = 10) -> str:
             time_str = "Unknown"
 
         formatted = f"""
-Task ID: {task_id}
-Service: {service_type}
-Time: {time_str}
-Error Code: {error_code}
-Reason: {failure_reason}
-"""
+                    Task ID: {task_id}
+                    Service: {service_type}
+                    Time: {time_str}
+                    Error Code: {error_code}
+                    Reason: {failure_reason}
+                    """
         formatted_tasks.append(formatted.strip())
 
     return "Recent Failed Tasks:\n" + "\n---\n".join(formatted_tasks)
