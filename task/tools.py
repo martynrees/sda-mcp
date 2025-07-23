@@ -1,12 +1,10 @@
 from typing import Any, Dict, Optional
 
-from mcp.server.fastmcp import FastMCP
-
+from mcp_instance import mcp  # Import the shared instance
 from client import client
 
-mcp = FastMCP("CatC-MCP")
-
 # Task Management Tools
+
 
 def extract_task_id_from_response(response: Dict[str, Any]) -> Optional[str]:
     """Extract task ID from a typical Catalyst Center API response.
@@ -24,39 +22,34 @@ def extract_task_id_from_response(response: Dict[str, Any]) -> Optional[str]:
         return None
 
     # Check for direct taskId in response
-    if 'response' in response:
-        resp = response['response']
+    if "response" in response:
+        resp = response["response"]
 
         # Check for taskId field
-        if 'taskId' in resp:
-            return resp['taskId']
+        if "taskId" in resp:
+            return resp["taskId"]
 
         # Check for url field with task ID
-        if 'url' in resp:
-            url = resp['url']
+        if "url" in resp:
+            url = resp["url"]
             # Extract task ID from URL like "/api/v1/task/12345-..."
-            if '/task/' in url:
-                return url.split('/task/')[-1]
+            if "/task/" in url:
+                return url.split("/task/")[-1]
 
     # Check for taskId at top level
-    if 'taskId' in response:
-        return response['taskId']
+    if "taskId" in response:
+        return response["taskId"]
 
     # Check for executionId (some APIs use this)
-    if 'executionId' in response:
-        return response['executionId']
+    if "executionId" in response:
+        return response["executionId"]
 
     return None
 
 
 @mcp.tool()
 async def execute_and_monitor_task(
-    operation_name: str,
-    operation_func,
-    *args,
-    auto_wait: bool = True,
-    max_wait_seconds: int = 300,
-    **kwargs
+    operation_name: str, operation_func, *args, auto_wait: bool = True, max_wait_seconds: int = 300, **kwargs
 ) -> str:
     """Execute an operation and automatically monitor the resulting task.
 
@@ -120,7 +113,7 @@ async def get_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
         return {"error": "Not connected. Use connect() first."}
 
     kwargs = {}
-    return await client.request('GET', f'/dna/intent/api/v1/task/{task_id}', **kwargs)
+    return await client.request("GET", f"/dna/intent/api/v1/task/{task_id}", **kwargs)
 
 
 @mcp.tool()
@@ -133,7 +126,7 @@ async def get_tasks(
     start_time: Optional[int] = None,
     end_time: Optional[int] = None,
     sort_by: Optional[str] = None,
-    order: Optional[str] = None
+    order: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
     """Get tasks with filtering options
 
@@ -157,29 +150,29 @@ async def get_tasks(
 
     params = {}
     if offset is not None:
-        params['offset'] = offset
+        params["offset"] = offset
     if limit is not None:
-        params['limit'] = limit
+        params["limit"] = limit
     if status is not None:
-        params['status'] = status
+        params["status"] = status
     if parent_id is not None:
-        params['parentId'] = parent_id
+        params["parentId"] = parent_id
     if root_id is not None:
-        params['rootId'] = root_id
+        params["rootId"] = root_id
     if start_time is not None:
-        params['startTime'] = start_time
+        params["startTime"] = start_time
     if end_time is not None:
-        params['endTime'] = end_time
+        params["endTime"] = end_time
     if sort_by is not None:
-        params['sortBy'] = sort_by
+        params["sortBy"] = sort_by
     if order is not None:
-        params['order'] = order
+        params["order"] = order
 
     kwargs = {}
     if params:
-        kwargs['params'] = params
+        kwargs["params"] = params
 
-    return await client.request('GET', f'/dna/intent/api/v1/tasks', **kwargs)
+    return await client.request("GET", f"/dna/intent/api/v1/tasks", **kwargs)
 
 
 @mcp.tool()
@@ -198,20 +191,20 @@ async def check_task_status(task_id: str) -> str:
 
     task_response = await get_task_by_id(task_id)
 
-    if not task_response or 'response' not in task_response:
+    if not task_response or "response" not in task_response:
         return f"Error: Could not retrieve task {task_id}"
 
-    task = task_response['response']
+    task = task_response["response"]
 
     # Extract key information
-    task_id_actual = task.get('id', 'Unknown')
-    is_error = task.get('isError', False)
-    progress = task.get('progress', 'Unknown')
-    start_time = task.get('startTime', 0)
-    end_time = task.get('endTime', 0)
-    failure_reason = task.get('failureReason', '')
-    error_code = task.get('errorCode', '')
-    service_type = task.get('serviceType', 'Unknown')
+    task_id_actual = task.get("id", "Unknown")
+    is_error = task.get("isError", False)
+    progress = task.get("progress", "Unknown")
+    start_time = task.get("startTime", 0)
+    end_time = task.get("endTime", 0)
+    failure_reason = task.get("failureReason", "")
+    error_code = task.get("errorCode", "")
+    service_type = task.get("serviceType", "Unknown")
 
     # Determine status
     if is_error:
@@ -254,11 +247,7 @@ Error Details:
 
 
 @mcp.tool()
-async def wait_for_task_completion(
-    task_id: str,
-    max_wait_seconds: int = 300,
-    check_interval_seconds: int = 5
-) -> str:
+async def wait_for_task_completion(task_id: str, max_wait_seconds: int = 300, check_interval_seconds: int = 5) -> str:
     """Wait for a task to complete and return the final status
 
     Polls a task until it completes (success or failure) or until the maximum wait time is reached.
@@ -281,12 +270,12 @@ async def wait_for_task_completion(
     while time.time() < max_wait_time:
         task_response = await get_task_by_id(task_id)
 
-        if not task_response or 'response' not in task_response:
+        if not task_response or "response" not in task_response:
             return f"Error: Could not retrieve task {task_id}"
 
-        task = task_response['response']
-        is_error = task.get('isError', False)
-        end_time = task.get('endTime', 0)
+        task = task_response["response"]
+        is_error = task.get("isError", False)
+        end_time = task.get("endTime", 0)
 
         # Check if task is complete
         if is_error or end_time > 0:
@@ -316,36 +305,32 @@ async def get_recent_failed_tasks(limit: int = 10) -> str:
         return "Error: Not connected. Use connect() first."
 
     # Get recent failed tasks
-    tasks_response = await get_tasks(
-        status="FAILURE",
-        limit=limit,
-        sort_by="startTime",
-        order="desc"
-    )
+    tasks_response = await get_tasks(status="FAILURE", limit=limit, sort_by="startTime", order="desc")
 
-    if not tasks_response or 'response' not in tasks_response:
+    if not tasks_response or "response" not in tasks_response:
         return "No failed tasks found or error retrieving tasks."
 
-    tasks = tasks_response['response']
+    tasks = tasks_response["response"]
 
     if not tasks:
         return "No recent failed tasks found."
 
     formatted_tasks = []
     for task in tasks:
-        task_id = task.get('id', 'Unknown')
-        service_type = task.get('serviceType', 'Unknown')
-        failure_reason = task.get('failureReason', 'Unknown reason')
-        error_code = task.get('errorCode', '')
-        start_time = task.get('startTime', 0)
+        task_id = task.get("id", "Unknown")
+        service_type = task.get("serviceType", "Unknown")
+        failure_reason = task.get("failureReason", "Unknown reason")
+        error_code = task.get("errorCode", "")
+        start_time = task.get("startTime", 0)
 
         # Convert timestamp to readable format
         import datetime
+
         if start_time > 0:
             dt = datetime.datetime.fromtimestamp(start_time / 1000)
-            time_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+            time_str = dt.strftime("%Y-%m-%d %H:%M:%S")
         else:
-            time_str = 'Unknown'
+            time_str = "Unknown"
 
         formatted = f"""
 Task ID: {task_id}
