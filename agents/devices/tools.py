@@ -2,8 +2,33 @@ from typing import Any, Dict, List, Optional
 
 from client import client_manager
 from mcp_instance import create_mcp_instance
+from agents.base_agent import SmartDomainAgent, format_response, extract_parameters_from_query
 
 agent = create_mcp_instance("DevicesAgent")
+
+# Create smart domain agent wrapper for devices
+devices_tool_keywords = {
+    "connect": ["connect", "login", "auth", "authenticate"],
+    "get_device_list": ["device", "devices", "inventory", "list devices", "network devices"],
+    "get_device_by_id": ["device details", "device info", "specific device", "device id"],
+    "delete_device_by_id": ["delete device", "remove device", "unregister device"],
+    "add_device": ["add device", "register device", "discover device", "new device"],
+    "update_device_details": ["update device", "modify device", "edit device"],
+    "get_device_health": ["device health", "health status", "device performance"],
+    "get_network_devices_count": ["device count", "number of devices", "total devices"],
+    "get_planned_access_points_for_floor": ["access point", "ap", "wireless", "floor plan"],
+    "update_health_score_definitions": ["health score", "health metrics", "performance metrics"],
+    "get_network_device_interface_count": ["interface", "interfaces", "port count", "network interfaces"],
+    "get_device_config_by_id": ["device config", "configuration", "device settings"],
+    "update_interface_details": ["interface config", "port config", "interface settings"],
+    "get_inventory_insight_device_link_mismatch": ["mismatch", "link mismatch", "inventory mismatch"],
+    "get_resync_interval_for_the_network_device": ["resync", "sync interval", "device sync"],
+    "update_resync_interval_for_the_network_device": ["update resync", "change sync interval"],
+    "legit_operations_for_interface": ["interface operations", "valid operations", "allowed operations"],
+    "get_the_details_of_physical_components_of_the_given_device": ["physical components", "hardware details", "device components"]
+}
+
+smart_agent = SmartDomainAgent("Devices", agent, devices_tool_keywords)
 
 
 @agent.tool()
@@ -796,3 +821,32 @@ async def get_details_of_a_single_network_device(
     return await client.request(
         "GET", f"/dna/intent/api/v1/networkDevices/{id}", **kwargs
     )
+
+
+# Register all tools with the smart agent
+def register_devices_tools():
+    """Register all device tools with the smart domain agent."""
+    # Get all functions that are decorated with @agent.tool()
+    import inspect
+    current_module = inspect.getmodule(inspect.currentframe())
+    
+    for name, obj in inspect.getmembers(current_module):
+        if (inspect.iscoroutinefunction(obj) and 
+            hasattr(obj, '__name__') and 
+            not name.startswith('_') and
+            name not in ['register_devices_tools', 'process_request']):
+            smart_agent.register_tool(name, obj)
+
+
+# Process request method for the devices agent
+async def process_request(query: str) -> str:
+    """
+    Process device-related requests with intelligent routing.
+    """
+    return await smart_agent.process_request(query)
+
+# Call registration on module load
+register_devices_tools()
+
+# Expose process_request at module level for router access
+agent.process_request = process_request

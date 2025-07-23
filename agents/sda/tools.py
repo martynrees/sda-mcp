@@ -2,8 +2,33 @@ from typing import Any, Dict, Optional
 
 from client import CatalystCenterClient, client_manager
 from mcp_instance import create_mcp_instance
+from agents.base_agent import SmartDomainAgent, format_response, extract_parameters_from_query
 
 agent = create_mcp_instance("SDAAgent")
+
+# Create smart domain agent wrapper
+sda_tool_keywords = {
+    "connect": ["connect", "login", "auth", "authenticate"],
+    "get_sites": ["site", "sites", "location", "locations"],
+    "get_network_devices": ["device", "devices", "equipment", "network", "switch", "router"],
+    "get_edge_device_from_sda_fabric": ["edge", "fabric", "sda"],
+    "get_device_info_from_sda_fabric": ["device info", "fabric device", "sda device"],
+    "add_site_in_sda_fabric": ["add site", "create site", "provision site"],
+    "get_site_from_sda_fabric": ["get site", "site info", "fabric site"],
+    "get_vn_from_sda_fabric": ["virtual network", "vn", "layer3", "l3"],
+    "add_vn_in_fabric": ["add virtual network", "create vn", "provision vn"],
+    "get_fabric_sites": ["fabric sites", "sda sites", "fabric locations"],
+    "get_anycast_gateways": ["anycast", "gateway", "gateways"],
+    "get_multicast_virtual_networks": ["multicast", "multicast vn", "multicast networks"],
+    "get_port_assignments": ["port", "port assignment", "interface assignment"],
+    "get_layer2_virtual_networks": ["layer2", "l2", "vlan", "layer 2"],
+    "get_layer3_virtual_networks": ["layer3", "l3", "routing", "layer 3"],
+    "get_fabric_devices": ["fabric device", "sda device", "fabric equipment"],
+    "provision_devices": ["provision", "deploy", "configure device"],
+    "get_transit_networks": ["transit", "transit network", "underlay"]
+}
+
+smart_agent = SmartDomainAgent("SDA", agent, sda_tool_keywords)
 
 
 @agent.tool()
@@ -24,6 +49,22 @@ async def get_edge_device_from_sda_fabric(deviceManagementIpAddress: str) -> Opt
     if params:
         kwargs["params"] = params
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/edge-device", **kwargs)
+
+
+@agent.tool()
+async def connect(base_url: str, username: str, password: str) -> str:
+    """Connect to Cisco Catalyst Center.
+
+    Args:
+        base_url: Base URL of the Catalyst Center (e.g., https://10.10.10.10)
+        username: Username for authentication
+        password: Password for authentication
+    """
+    client = CatalystCenterClient(base_url, username, password)
+    if await client.authenticate():
+        client_manager.set_client(client)
+        return "Successfully connected to Cisco Catalyst Center"
+    return "Failed to connect to Cisco Catalyst Center"
 
 
 @agent.tool()
@@ -3277,3 +3318,34 @@ async def update_transit_networks(request_body: Dict[str, Any]) -> Optional[Dict
 
     kwargs = {"json": request_body}
     return await client.request("PUT", "/dna/intent/api/v1/sda/transitNetworks", **kwargs)
+
+
+# Register all tools with the smart agent
+def register_sda_tools():
+    """Register all SDA tools with the smart domain agent."""
+    tools_to_register = [
+        connect, get_edge_device_from_sda_fabric, get_device_info_from_sda_fabric,
+        add_ip_pool_in_sda_virtual_network, delete_ip_pool_from_sda_virtual_network,
+        get_ip_pool_from_sda_virtual_network, get_site_from_sda_fabric,
+        add_site_in_sda_fabric, get_multicast_details_from_sda_fabric,
+        add_vn_in_fabric, get_vn_from_sda_fabric, delete_vn_from_sda_fabric,
+        get_sites, get_network_devices, get_multicast_virtual_networks,
+        # Add more tools as needed
+    ]
+    
+    for tool_func in tools_to_register:
+        smart_agent.register_tool(tool_func.__name__, tool_func)
+
+
+# Process request method for the SDA agent
+async def process_request(query: str) -> str:
+    """
+    Process SDA-related requests with intelligent routing.
+    """
+    return await smart_agent.process_request(query)
+
+# Call registration on module load
+register_sda_tools()
+
+# Expose process_request at module level for router access
+agent.process_request = process_request

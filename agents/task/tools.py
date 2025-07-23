@@ -1,9 +1,22 @@
 from typing import Any, Dict, Optional
 
 from mcp_instance import create_mcp_instance
+from agents.base_agent import SmartDomainAgent, format_response, extract_parameters_from_query
 
 agent = create_mcp_instance("TaskAgent")
 from client import client_manager
+
+# Create smart domain agent wrapper for tasks
+task_tool_keywords = {
+    "get_task_by_id": ["task", "task id", "task status", "specific task"],
+    "get_tasks": ["tasks", "task list", "all tasks", "task history"],
+    "execute_and_monitor_task": ["execute task", "run task", "monitor task", "task execution"],
+    "wait_for_task_completion": ["wait for task", "task completion", "task finished"],
+    "get_task_tree": ["task tree", "subtasks", "task hierarchy"],
+    "extract_task_id_from_response": ["extract task", "parse task", "task id extraction"]
+}
+
+smart_agent = SmartDomainAgent("Task", agent, task_tool_keywords)
 
 # Task Management Tools
 
@@ -345,3 +358,36 @@ async def get_recent_failed_tasks(limit: int = 10) -> str:
         formatted_tasks.append(formatted.strip())
 
     return "Recent Failed Tasks:\n" + "\n---\n".join(formatted_tasks)
+
+
+# Register all tools with the smart agent
+def register_task_tools():
+    """Register all task tools with the smart domain agent."""
+    import inspect
+    current_module = inspect.getmodule(inspect.currentframe())
+    
+    for name, obj in inspect.getmembers(current_module):
+        if (inspect.iscoroutinefunction(obj) and 
+            hasattr(obj, '__name__') and 
+            not name.startswith('_') and
+            name not in ['register_task_tools', 'process_request']):
+            smart_agent.register_tool(name, obj)
+        elif (inspect.isfunction(obj) and 
+              hasattr(obj, '__name__') and 
+              not name.startswith('_') and
+              name not in ['register_task_tools', 'process_request']):
+            smart_agent.register_tool(name, obj)
+
+
+# Process request method for the task agent
+async def process_request(query: str) -> str:
+    """
+    Process task-related requests with intelligent routing.
+    """
+    return await smart_agent.process_request(query)
+
+# Call registration on module load
+register_task_tools()
+
+# Expose process_request at module level for router access
+agent.process_request = process_request
