@@ -12,7 +12,7 @@ domain_agents = {}
 
 # Domain routing keywords for intelligent prompt routing
 DOMAIN_KEYWORDS = {
-    "authentication": ["auth", "authentication", "login", "token", "credential", "user", "password", "certificate"],
+    "authentication": ["auth", "authentication", "login", "token", "credential", "user", "password", "certificate", "connect", "connection"],
     "appliance": ["imc", "appliance", "cisco imc", "hardware", "server"],
     "system": ["backup", "restore", "health", "performance", "platform", "license", "certificate", "user", "role", "disaster recovery"],
     "connectivity": ["fabric", "wireless", "wired", "sda", "sd-access", "connectivity"],
@@ -46,9 +46,10 @@ def classify_query(query: str) -> str:
                 else:
                     score += 1
         domain_scores[domain] = score
-    
-    # Special routing logic for common patterns
-    if any(term in query_lower for term in ["fabric", "sda", "sd-access", "virtual network", "site provision"]):
+      # Special routing logic for common patterns
+    if any(term in query_lower for term in ["connect", "login", "auth", "authenticate"]):
+        return "authentication"  # Route connect requests to authentication
+    elif any(term in query_lower for term in ["fabric", "sda", "sd-access", "virtual network", "site provision"]):
         return "sda"
     elif any(term in query_lower for term in ["device", "inventory", "network device", "switch", "router"]):
         return "devices"
@@ -61,7 +62,7 @@ def classify_query(query: str) -> str:
         if best_domain[1] > 0:
             return best_domain[0]
     
-    return "network_inventory"  # Default fallback
+    return "sda"  # Default fallback
 
 
 def load_domain_agent(domain_name):
@@ -69,10 +70,9 @@ def load_domain_agent(domain_name):
     if domain_name in domain_agents:
         return domain_agents[domain_name]
 
-    try:
-        # Map abstract domain names to actual agent modules
+    try:        # Map abstract domain names to actual agent modules
         domain_mapping = {
-            "authentication": "sda",  # Authentication APIs are in SDA module
+            "authentication": "authentication",  # Authentication APIs are in authentication module
             "appliance": "devices",   # Appliance APIs are device-related
             "system": "devices",      # System APIs are in devices
             "connectivity": "sda",    # Connectivity includes SDA
@@ -272,7 +272,10 @@ async def use_sda_tools(query: str) -> str:
     """
     Legacy support: Use this for any request related to Software-Defined Access (SDA), including fabrics, virtual networks, and site provisioning.
     """
-    return await route_connectivity_requests(query)
+    agent = load_domain_agent("sda")
+    if agent and hasattr(agent, 'run_tools'):
+        return await agent.run_tools(query)
+    return "Error: Could not load the sda agent."
 
 
 @router_agent.tool()

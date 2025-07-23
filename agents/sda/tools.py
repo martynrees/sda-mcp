@@ -8,7 +8,6 @@ agent = create_mcp_instance("SDAAgent")
 
 # Create smart domain agent wrapper
 sda_tool_keywords = {
-    "connect": ["connect", "login", "auth", "authenticate"],
     "get_sites": ["site", "sites", "location", "locations"],
     "get_network_devices": ["device", "devices", "equipment", "network", "switch", "router"],
     "get_edge_device_from_sda_fabric": ["edge", "fabric", "sda"],
@@ -50,21 +49,6 @@ async def get_edge_device_from_sda_fabric(deviceManagementIpAddress: str) -> Opt
         kwargs["params"] = params
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/edge-device", **kwargs)
 
-
-@agent.tool()
-async def connect(base_url: str, username: str, password: str) -> str:
-    """Connect to Cisco Catalyst Center.
-
-    Args:
-        base_url: Base URL of the Catalyst Center (e.g., https://10.10.10.10)
-        username: Username for authentication
-        password: Password for authentication
-    """
-    client = CatalystCenterClient(base_url, username, password)
-    if await client.authenticate():
-        client_manager.set_client(client)
-        return "Successfully connected to Cisco Catalyst Center"
-    return "Failed to connect to Cisco Catalyst Center"
 
 
 @agent.tool()
