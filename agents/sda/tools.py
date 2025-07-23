@@ -1,10 +1,12 @@
 from typing import Any, Dict, Optional
 
 from client import CatalystCenterClient, client_manager
-from mcp_instance import mcp
+from mcp_instance import create_mcp_instance
+
+agent = create_mcp_instance("SDAAgent")
 
 
-@mcp.tool()
+@agent.tool()
 async def get_edge_device_from_sda_fabric(deviceManagementIpAddress: str) -> Optional[Dict[str, Any]]:
     """Get edge device from SDA Fabric
 
@@ -24,7 +26,7 @@ async def get_edge_device_from_sda_fabric(deviceManagementIpAddress: str) -> Opt
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/edge-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_info_from_sda_fabric(deviceManagementIpAddress: str) -> Optional[Dict[str, Any]]:
     """Get device info from SDA Fabric
 
@@ -44,7 +46,7 @@ async def get_device_info_from_sda_fabric(deviceManagementIpAddress: str) -> Opt
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_ip_pool_in_sda_virtual_network(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add IP Pool in SDA Virtual Network
 
@@ -60,7 +62,7 @@ async def add_ip_pool_in_sda_virtual_network(request_body: Dict[str, Any]) -> Op
     return await client.request("POST", f"/dna/intent/api/v1/business/sda/virtualnetwork/ippool", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_ip_pool_from_sda_virtual_network(
     siteNameHierarchy: str, virtualNetworkName: str, ipPoolName: str
 ) -> Optional[Dict[str, Any]]:
@@ -88,7 +90,7 @@ async def delete_ip_pool_from_sda_virtual_network(
     return await client.request("DELETE", f"/dna/intent/api/v1/business/sda/virtualnetwork/ippool", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_ip_pool_from_sda_virtual_network(
     siteNameHierarchy: str, virtualNetworkName: str, ipPoolName: str
 ) -> Optional[Dict[str, Any]]:
@@ -116,7 +118,7 @@ async def get_ip_pool_from_sda_virtual_network(
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/virtualnetwork/ippool", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_site_from_sda_fabric(siteNameHierarchy: str) -> Optional[Dict[str, Any]]:
     """Get Site from SDA Fabric
 
@@ -138,7 +140,7 @@ async def get_site_from_sda_fabric(siteNameHierarchy: str) -> Optional[Dict[str,
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/fabric-site", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_site_in_sda_fabric(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add Site in SDA Fabric
 
@@ -154,7 +156,7 @@ async def add_site_in_sda_fabric(request_body: Dict[str, Any]) -> Optional[Dict[
     return await client.request("POST", f"/dna/intent/api/v1/business/sda/fabric-site", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_multicast_details_from_sda_fabric(siteNameHierarchy: str) -> Optional[Dict[str, Any]]:
     """Get multicast details from SDA fabric
 
@@ -174,7 +176,7 @@ async def get_multicast_details_from_sda_fabric(siteNameHierarchy: str) -> Optio
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/multicast", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_vn_in_fabric(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add VN in fabric
 
@@ -192,7 +194,7 @@ async def add_vn_in_fabric(request_body: Dict[str, Any]) -> Optional[Dict[str, A
     return await client.request("POST", f"/dna/intent/api/v1/business/sda/virtual-network", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: str) -> Optional[Dict[str, Any]]:
     """Get VN from SDA Fabric
 
@@ -217,7 +219,7 @@ async def get_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: str
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/virtual-network", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: str) -> Optional[Dict[str, Any]]:
     """Delete VN from SDA Fabric
 
@@ -242,7 +244,7 @@ async def delete_vn_from_sda_fabric(virtualNetworkName: str, siteNameHierarchy: 
     return await client.request("DELETE", f"/dna/intent/api/v1/business/sda/virtual-network", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def re_provision_wired_device(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Re-Provision Wired Device
 
@@ -258,7 +260,7 @@ async def re_provision_wired_device(request_body: Dict[str, Any]) -> Optional[Di
     return await client.request("PUT", f"/dna/intent/api/v1/business/sda/provision-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def provision_wired_device(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Provision Wired Device
 
@@ -274,7 +276,7 @@ async def provision_wired_device(request_body: Dict[str, Any]) -> Optional[Dict[
     return await client.request("POST", f"/dna/intent/api/v1/business/sda/provision-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_provisioned_wired_device(deviceManagementIpAddress: str) -> Optional[Dict[str, Any]]:
     """Get Provisioned Wired Device
 
@@ -294,7 +296,7 @@ async def get_provisioned_wired_device(deviceManagementIpAddress: str) -> Option
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/provision-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_virtual_network_summary(siteNameHierarchy: str) -> Optional[Dict[str, Any]]:
     """Get Virtual Network Summary
 
@@ -314,7 +316,7 @@ async def get_virtual_network_summary(siteNameHierarchy: str) -> Optional[Dict[s
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/virtual-network/summary", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_port_assignment_for_user_device_in_sda_fabric(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add Port assignment for user device in SDA Fabric
 
@@ -332,7 +334,7 @@ async def add_port_assignment_for_user_device_in_sda_fabric(request_body: Dict[s
     return await client.request("POST", f"/dna/intent/api/v1/business/sda/hostonboarding/user-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_port_assignment_for_user_device_in_sda_fabric(
     deviceManagementIpAddress: str, interfaceName: str
 ) -> Optional[Dict[str, Any]]:
@@ -359,7 +361,7 @@ async def get_port_assignment_for_user_device_in_sda_fabric(
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/hostonboarding/user-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_control_plane_device_from_sda_fabric(deviceManagementIpAddress: str) -> Optional[Dict[str, Any]]:
     """Get control plane device from SDA Fabric
 
@@ -379,7 +381,7 @@ async def get_control_plane_device_from_sda_fabric(deviceManagementIpAddress: st
     return await client.request("GET", f"/dna/intent/api/v1/business/sda/control-plane-device", **kwargs)
 
 
-@mcp.tool()  # TODO: move to a more appropriate module
+@agent.tool()  # TODO: move to a more appropriate module
 async def get_sites() -> str:
     """Get list of sites in the network."""
     client = client_manager.get_client()
@@ -409,7 +411,7 @@ Parent: {site.get('parentName', 'None')}
     return "\n---\n".join(formatted_sites)
 
 
-@mcp.tool()  # TODO: move to a more appropriate module
+@agent.tool()  # TODO: move to a more appropriate module
 async def get_network_devices(limit: int = 10, offset: int = 1) -> str:
     """Get list of network devices.
 
@@ -448,7 +450,7 @@ async def get_network_devices(limit: int = 10, offset: int = 1) -> str:
     return "\n---\n".join(formatted_devices)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_multicast_virtual_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add multicast virtual networks.
@@ -464,7 +466,7 @@ async def add_multicast_virtual_networks(request_body: Dict[str, Any]) -> Option
     return await client.request("POST", "/dna/intent/api/v1/sda/multicast/virtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_multicast_virtual_networks(
     fabricId: Optional[str] = None,
     virtualNetworkName: Optional[str] = None,
@@ -500,7 +502,7 @@ async def get_multicast_virtual_networks(
     return await client.request("GET", "/dna/intent/api/v1/sda/multicast/virtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_multicast_virtual_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update multicast virtual networks.
@@ -516,7 +518,7 @@ async def update_multicast_virtual_networks(request_body: Dict[str, Any]) -> Opt
     return await client.request("PUT", "/dna/intent/api/v1/sda/multicast/virtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_multicast_virtual_network_by_id(
     id: str,
 ) -> Optional[Dict[str, Any]]:
@@ -533,7 +535,7 @@ async def delete_multicast_virtual_network_by_id(
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/multicast/virtualNetworks/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def read_transit_network_with_its_health_summary_from_id(
     id: str,
     x_caller_id: Optional[str] = None,
@@ -579,7 +581,7 @@ async def read_transit_network_with_its_health_summary_from_id(
     return await client.request("GET", f"/dna/data/api/v1/transitNetworkHealthSummaries/{id}", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_layer3_virtual_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update layer 3 virtual networks.
@@ -595,7 +597,7 @@ async def update_layer3_virtual_networks(request_body: Dict[str, Any]) -> Option
     return await client.request("PUT", "/dna/intent/api/v1/sda/layer3VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_port_channels(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add port channels.
@@ -611,7 +613,7 @@ async def add_port_channels(request_body: Dict[str, Any]) -> Optional[Dict[str, 
     return await client.request("POST", "/dna/intent/api/v1/sda/portChannels", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_port_channels(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update port channels.
@@ -627,7 +629,7 @@ async def update_port_channels(request_body: Dict[str, Any]) -> Optional[Dict[st
     return await client.request("PUT", "/dna/intent/api/v1/sda/portChannels", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_port_channels(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -665,7 +667,7 @@ async def delete_port_channels(
     return await client.request("DELETE", "/dna/intent/api/v1/sda/portChannels", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_port_channels(
     fabricId: Optional[str] = None,
     networkDeviceId: Optional[str] = None,
@@ -713,7 +715,7 @@ async def get_port_channels(
     return await client.request("GET", "/dna/intent/api/v1/sda/portChannels", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_device_layer3_handoffs_with_sda_transit(
     fabricId: str, networkDeviceId: str
 ) -> Optional[Dict[str, Any]]:
@@ -740,7 +742,7 @@ async def delete_fabric_device_layer3_handoffs_with_sda_transit(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def add_fabric_devices_layer3_handoffs_with_sda_transit(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add fabric devices layer 3 handoffs with sda transit.
@@ -760,7 +762,7 @@ async def add_fabric_devices_layer3_handoffs_with_sda_transit(request_body: Dict
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def update_fabric_devices_layer3_handoffs_with_sda_transit(
     request_body: Dict[str, Any],
 ) -> Optional[Dict[str, Any]]:
@@ -782,7 +784,7 @@ async def update_fabric_devices_layer3_handoffs_with_sda_transit(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def the_trend_analytics_data_for_a_transit_network_in_the_specified_time_range(
     id: str,
     trendInterval: str,
@@ -842,7 +844,7 @@ async def the_trend_analytics_data_for_a_transit_network_in_the_specified_time_r
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def add_fabric_devices_layer3_handoffs_with_ip_transit(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add fabric devices layer 3 handoffs with ip transit.
@@ -862,7 +864,7 @@ async def add_fabric_devices_layer3_handoffs_with_ip_transit(request_body: Dict[
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def update_fabric_devices_layer3_handoffs_with_ip_transit(
     request_body: Dict[str, Any],
 ) -> Optional[Dict[str, Any]]:
@@ -884,7 +886,7 @@ async def update_fabric_devices_layer3_handoffs_with_ip_transit(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_device_layer3_handoffs_with_ip_transit(
     fabricId: str, networkDeviceId: str
 ) -> Optional[Dict[str, Any]]:
@@ -911,7 +913,7 @@ async def delete_fabric_device_layer3_handoffs_with_ip_transit(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_layer3_handoffs_with_ip_transit(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -949,7 +951,7 @@ async def get_fabric_devices_layer3_handoffs_with_ip_transit(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_extranet_policy_count() -> Optional[Dict[str, Any]]:
     """
     Get extranet policy count.
@@ -961,7 +963,7 @@ async def get_extranet_policy_count() -> Optional[Dict[str, Any]]:
     return await client.request("GET", "/dna/intent/api/v1/sda/extranetPolicies/count")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_port_channel_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete port channel by id.
@@ -976,29 +978,7 @@ async def delete_port_channel_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/portChannels/{id}")
 
 
-from typing import Any, Dict, Optional
-
-from client import CatalystCenterClient, client_manager
-from mcp_instance import mcp
-
-
-@mcp.tool()
-async def connect(base_url: str, username: str, password: str) -> str:
-    """Connect to Cisco Catalyst Center.
-
-    Args:
-        base_url: Base URL of the Catalyst Center (e.g., https://10.10.10.10)
-        username: Username for authentication
-        password: Password for authentication
-    """
-    client = CatalystCenterClient(base_url, username, password)
-    if await client.authenticate():
-        client_manager.set_client(client)
-        return "Successfully connected to Cisco Catalyst Center"
-    return "Failed to connect to Cisco Catalyst Center"
-
-
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_layer2_handoffs_count(
     fabricId: str, networkDeviceId: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -1022,7 +1002,7 @@ async def get_fabric_devices_layer2_handoffs_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricDevices/layer2Handoffs/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_site_count() -> Optional[Dict[str, Any]]:
     """Get fabric site count
 
@@ -1035,7 +1015,7 @@ async def get_fabric_site_count() -> Optional[Dict[str, Any]]:
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricSites/count")
 
 
-@mcp.tool()
+@agent.tool()
 async def get_anycast_gateways(
     id: Optional[str] = None,
     fabricId: Optional[str] = None,
@@ -1087,7 +1067,7 @@ async def get_anycast_gateways(
     return await client.request("GET", "/dna/intent/api/v1/sda/anycastGateways", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_anycast_gateways(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add anycast gateways
 
@@ -1104,7 +1084,7 @@ async def add_anycast_gateways(request_body: Dict[str, Any]) -> Optional[Dict[st
     return await client.request("POST", "/dna/intent/api/v1/sda/anycastGateways", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_zone_count() -> Optional[Dict[str, Any]]:
     """Get fabric zone count
 
@@ -1117,7 +1097,7 @@ async def get_fabric_zone_count() -> Optional[Dict[str, Any]]:
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricZones/count")
 
 
-@mcp.tool()
+@agent.tool()
 async def update_layer2_virtual_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Update layer 2 virtual networks
 
@@ -1134,7 +1114,7 @@ async def update_layer2_virtual_networks(request_body: Dict[str, Any]) -> Option
     return await client.request("PUT", "/dna/intent/api/v1/sda/layer2VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_layer2_virtual_networks(
     id: Optional[str] = None,
     fabricId: Optional[str] = None,
@@ -1186,7 +1166,7 @@ async def get_layer2_virtual_networks(
     return await client.request("GET", "/dna/intent/api/v1/sda/layer2VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_layer2_virtual_networks(
     fabricId: str,
     vlanName: Optional[str] = None,
@@ -1223,7 +1203,7 @@ async def delete_layer2_virtual_networks(
     return await client.request("DELETE", "/dna/intent/api/v1/sda/layer2VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_layer2_virtual_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add layer 2 virtual networks
 
@@ -1240,7 +1220,7 @@ async def add_layer2_virtual_networks(request_body: Dict[str, Any]) -> Optional[
     return await client.request("POST", "/dna/intent/api/v1/sda/layer2VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_layer3_handoffs_with_sda_transit(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -1273,7 +1253,7 @@ async def get_fabric_devices_layer3_handoffs_with_sda_transit(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricDevices/layer3Handoffs/sdaTransits", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_list_of_fabric_sites_with_their_health_summary(
     x_caller_id: Optional[str] = None,
     startTime: Optional[float] = None,
@@ -1345,7 +1325,7 @@ async def read_list_of_fabric_sites_with_their_health_summary(
     return await client.request("GET", "/dna/data/api/v1/fabricSiteHealthSummaries", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_layer3_virtual_networks(
     virtualNetworkName: Optional[str] = None,
     fabricId: Optional[str] = None,
@@ -1385,7 +1365,7 @@ async def get_layer3_virtual_networks(
     return await client.request("GET", "/dna/intent/api/v1/sda/layer3VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_layer3_virtual_networks(virtualNetworkName: Optional[str] = None) -> Optional[Dict[str, Any]]:
     """Delete layer 3 virtual networks
 
@@ -1407,7 +1387,7 @@ async def delete_layer3_virtual_networks(virtualNetworkName: Optional[str] = Non
     return await client.request("DELETE", "/dna/intent/api/v1/sda/layer3VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_layer3_virtual_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add layer 3 virtual networks
 
@@ -1424,7 +1404,7 @@ async def add_layer3_virtual_networks(request_body: Dict[str, Any]) -> Optional[
     return await client.request("POST", "/dna/intent/api/v1/sda/layer3VirtualNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_virtual_network_with_its_health_summary_from_id(
     id: str,
     x_caller_id: Optional[str] = None,
@@ -1470,7 +1450,7 @@ async def read_virtual_network_with_its_health_summary_from_id(
     return await client.request("GET", f"/dna/data/api/v1/virtualNetworkHealthSummaries/{id}", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_port_assignment_count(
     fabricId: Optional[str] = None,
     networkDeviceId: Optional[str] = None,
@@ -1510,7 +1490,7 @@ async def get_port_assignment_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/portAssignments/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_pending_fabric_events(
     fabricId: Optional[str] = None,
     offset: Optional[int] = None,
@@ -1542,7 +1522,7 @@ async def get_pending_fabric_events(
     return await client.request("GET", "/dna/intent/api/v1/sda/pendingFabricEvents", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def reprovision_devices(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Re-provision devices
 
@@ -1559,7 +1539,7 @@ async def reprovision_devices(request_body: Dict[str, Any]) -> Optional[Dict[str
     return await client.request("PUT", "/dna/intent/api/v1/sda/provisionDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def provision_devices(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Provision devices
 
@@ -1576,7 +1556,7 @@ async def provision_devices(request_body: Dict[str, Any]) -> Optional[Dict[str, 
     return await client.request("POST", "/dna/intent/api/v1/sda/provisionDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_provisioned_devices(
     id: Optional[str] = None,
     networkDeviceId: Optional[str] = None,
@@ -1616,7 +1596,7 @@ async def get_provisioned_devices(
     return await client.request("GET", "/dna/intent/api/v1/sda/provisionDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_layer2_virtual_network_count(
     fabricId: Optional[str] = None,
     vlanName: Optional[str] = None,
@@ -1656,7 +1636,7 @@ async def get_layer2_virtual_network_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/layer2VirtualNetworks/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_fabric_devices(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Update fabric devices
 
@@ -1673,7 +1653,7 @@ async def update_fabric_devices(request_body: Dict[str, Any]) -> Optional[Dict[s
     return await client.request("PUT", "/dna/intent/api/v1/sda/fabricDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -1710,7 +1690,7 @@ async def get_fabric_devices(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_fabric_zone(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add fabric zone
 
@@ -1727,7 +1707,7 @@ async def add_fabric_zone(request_body: Dict[str, Any]) -> Optional[Dict[str, An
     return await client.request("POST", "/dna/intent/api/v1/sda/fabricZones", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_zones(
     id: Optional[str] = None,
     siteId: Optional[str] = None,
@@ -1763,7 +1743,7 @@ async def get_fabric_zones(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricZones", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_fabric_zone(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Update fabric zone
 
@@ -1780,7 +1760,7 @@ async def update_fabric_zone(request_body: Dict[str, Any]) -> Optional[Dict[str,
     return await client.request("PUT", "/dna/intent/api/v1/sda/fabricZones", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_fabric_site(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add fabric site
 
@@ -1797,7 +1777,7 @@ async def add_fabric_site(request_body: Dict[str, Any]) -> Optional[Dict[str, An
     return await client.request("POST", "/dna/intent/api/v1/sda/fabricSites", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_fabric_site(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Update fabric site
 
@@ -1814,7 +1794,7 @@ async def update_fabric_site(request_body: Dict[str, Any]) -> Optional[Dict[str,
     return await client.request("PUT", "/dna/intent/api/v1/sda/fabricSites", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_sites(
     id: Optional[str] = None,
     siteId: Optional[str] = None,
@@ -1850,7 +1830,7 @@ async def get_fabric_sites(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricSites", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_layer3_virtual_networks_count(
     fabricId: Optional[str] = None, anchoredSiteId: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -1877,7 +1857,7 @@ async def get_layer3_virtual_networks_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/layer3VirtualNetworks/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_count(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -1906,7 +1886,7 @@ async def get_fabric_devices_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricDevices/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_list_of_virtual_networks_with_their_health_summary(
     x_caller_id: Optional[str] = None,
     startTime: Optional[float] = None,
@@ -1982,7 +1962,7 @@ async def read_list_of_virtual_networks_with_their_health_summary(
     return await client.request("GET", "/dna/data/api/v1/virtualNetworkHealthSummaries", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_multicast(
     fabricId: Optional[str] = None,
     offset: Optional[int] = None,
@@ -2014,7 +1994,7 @@ async def get_multicast(
     return await client.request("GET", "/dna/intent/api/v1/sda/multicast", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_virtual_networks_count(
     x_caller_id: Optional[str] = None,
     startTime: Optional[float] = None,
@@ -2066,7 +2046,7 @@ async def read_virtual_networks_count(
     return await client.request("GET", "/dna/data/api/v1/virtualNetworkHealthSummaries/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_virtual_network_trend_analytics(
     id: str,
     trendInterval: str,
@@ -2122,7 +2102,7 @@ async def get_virtual_network_trend_analytics(
     return await client.request("GET", f"/dna/data/api/v1/virtualNetworkHealthSummaries/{id}/trendAnalytics", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_port_assignments(
     fabricId: Optional[str] = None,
     networkDeviceId: Optional[str] = None,
@@ -2174,7 +2154,7 @@ async def get_port_assignments(
     return await client.request("GET", "/dna/intent/api/v1/sda/portAssignments", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_port_assignments(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Add port assignments
 
@@ -2191,7 +2171,7 @@ async def add_port_assignments(request_body: Dict[str, Any]) -> Optional[Dict[st
     return await client.request("POST", "/dna/intent/api/v1/sda/portAssignments", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_port_assignments(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Update port assignments
 
@@ -2208,7 +2188,7 @@ async def update_port_assignments(request_body: Dict[str, Any]) -> Optional[Dict
     return await client.request("PUT", "/dna/intent/api/v1/sda/portAssignments", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_fabric_site_count(
     x_caller_id: Optional[str] = None,
     startTime: Optional[float] = None,
@@ -2256,7 +2236,7 @@ async def read_fabric_site_count(
     return await client.request("GET", "/dna/data/api/v1/fabricSiteHealthSummaries/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_anycast_gateway_count(
     fabricId: Optional[str] = None,
     virtualNetworkName: Optional[str] = None,
@@ -2296,7 +2276,7 @@ async def get_anycast_gateway_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/anycastGateways/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_provisioned_devices_count(siteId: Optional[str] = None) -> Optional[Dict[str, Any]]:
     """Get Provisioned Devices count
 
@@ -2318,7 +2298,7 @@ async def get_provisioned_devices_count(siteId: Optional[str] = None) -> Optiona
     return await client.request("GET", "/dna/intent/api/v1/sda/provisionDevices/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_extranet_policy(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add extranet policy.
@@ -2334,7 +2314,7 @@ async def add_extranet_policy(request_body: Dict[str, Any]) -> Optional[Dict[str
     return await client.request("POST", "/dna/intent/api/v1/sda/extranetPolicies", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_fabric_devices(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add fabric devices.
@@ -2350,7 +2330,7 @@ async def add_fabric_devices(request_body: Dict[str, Any]) -> Optional[Dict[str,
     return await client.request("POST", "/dna/intent/api/v1/sda/fabricDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_fabric_devices_layer2_handoffs(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add fabric devices layer 2 handoffs.
@@ -2366,7 +2346,7 @@ async def add_fabric_devices_layer2_handoffs(request_body: Dict[str, Any]) -> Op
     return await client.request("POST", "/dna/intent/api/v1/sda/fabricDevices/layer2Handoffs", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_transit_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add transit networks.
@@ -2382,7 +2362,7 @@ async def add_transit_networks(request_body: Dict[str, Any]) -> Optional[Dict[st
     return await client.request("POST", "/dna/intent/api/v1/sda/transitNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def apply_pending_fabric_events(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Apply pending fabric events.
@@ -2398,7 +2378,7 @@ async def apply_pending_fabric_events(request_body: Dict[str, Any]) -> Optional[
     return await client.request("POST", "/dna/intent/api/v1/sda/pendingFabricEvents/apply", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_anycast_gateway_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete anycast gateway by id.
@@ -2413,7 +2393,7 @@ async def delete_anycast_gateway_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/anycastGateways/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_extranet_policies(extranetPolicyName: Optional[str] = None) -> Optional[Dict[str, Any]]:
     """
     Delete extranet policies.
@@ -2434,7 +2414,7 @@ async def delete_extranet_policies(extranetPolicyName: Optional[str] = None) -> 
     return await client.request("DELETE", "/dna/intent/api/v1/sda/extranetPolicies", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_extranet_policy_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete extranet policy by id.
@@ -2449,7 +2429,7 @@ async def delete_extranet_policy_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/extranetPolicies/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_device_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete fabric device by id.
@@ -2464,7 +2444,7 @@ async def delete_fabric_device_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/fabricDevices/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_device_layer2_handoff_by_id(
     id: str,
 ) -> Optional[Dict[str, Any]]:
@@ -2481,7 +2461,7 @@ async def delete_fabric_device_layer2_handoff_by_id(
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/fabricDevices/layer2Handoffs/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_device_layer2_handoffs(fabricId: str, networkDeviceId: str) -> Optional[Dict[str, Any]]:
     """
     Delete fabric device layer 2 handoffs.
@@ -2500,7 +2480,7 @@ async def delete_fabric_device_layer2_handoffs(fabricId: str, networkDeviceId: s
     return await client.request("DELETE", "/dna/intent/api/v1/sda/fabricDevices/layer2Handoffs", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_device_layer3_handoff_with_ip_transit_by_id(
     id: str,
 ) -> Optional[Dict[str, Any]]:
@@ -2517,7 +2497,7 @@ async def delete_fabric_device_layer3_handoff_with_ip_transit_by_id(
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/fabricDevices/layer3Handoffs/ipTransits/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_devices(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -2545,7 +2525,7 @@ async def delete_fabric_devices(
     return await client.request("DELETE", "/dna/intent/api/v1/sda/fabricDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_site_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete fabric site by id.
@@ -2560,7 +2540,7 @@ async def delete_fabric_site_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/fabricSites/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_fabric_zone_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete fabric zone by id.
@@ -2575,7 +2555,7 @@ async def delete_fabric_zone_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/fabricZones/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_layer2_virtual_network_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete layer 2 virtual network by id.
@@ -2590,7 +2570,7 @@ async def delete_layer2_virtual_network_by_id(id: str) -> Optional[Dict[str, Any
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/layer2VirtualNetworks/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_layer3_virtual_network_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete layer 3 virtual network by id.
@@ -2605,7 +2585,7 @@ async def delete_layer3_virtual_network_by_id(id: str) -> Optional[Dict[str, Any
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/layer3VirtualNetworks/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_port_assignment_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete port assignment by id.
@@ -2620,7 +2600,7 @@ async def delete_port_assignment_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/portAssignments/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_port_assignments(
     fabricId: str,
     networkDeviceId: str,
@@ -2654,7 +2634,7 @@ async def delete_port_assignments(
     return await client.request("DELETE", "/dna/intent/api/v1/sda/portAssignments", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_provisioned_device_by_id(id: str, cleanUpConfig: Optional[bool] = None) -> Optional[Dict[str, Any]]:
     """
     Delete provisioned device by Id.
@@ -2676,7 +2656,7 @@ async def delete_provisioned_device_by_id(id: str, cleanUpConfig: Optional[bool]
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/provisionDevices/{id}", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_provisioned_devices(
     networkDeviceId: Optional[str] = None,
     siteId: Optional[str] = None,
@@ -2707,7 +2687,7 @@ async def delete_provisioned_devices(
     return await client.request("DELETE", "/dna/intent/api/v1/sda/provisionDevices", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_transit_network_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Delete transit network by id.
@@ -2722,7 +2702,7 @@ async def delete_transit_network_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("DELETE", f"/dna/intent/api/v1/sda/transitNetworks/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def get_authentication_profiles(
     fabricId: Optional[str] = None,
     authenticationProfileName: Optional[str] = None,
@@ -2761,7 +2741,7 @@ async def get_authentication_profiles(
     return await client.request("GET", "/dna/intent/api/v1/sda/authenticationProfiles", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_extranet_policies(
     extranetPolicyName: Optional[str] = None,
     offset: Optional[float] = None,
@@ -2792,7 +2772,7 @@ async def get_extranet_policies(
     return await client.request("GET", "/dna/intent/api/v1/sda/extranetPolicies", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_layer2_handoffs(
     fabricId: str,
     networkDeviceId: Optional[str] = None,
@@ -2824,7 +2804,7 @@ async def get_fabric_devices_layer2_handoffs(
     return await client.request("GET", "/dna/intent/api/v1/sda/fabricDevices/layer2Handoffs", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_layer3_handoffs_with_ip_transit_count(
     fabricId: str, networkDeviceId: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -2851,7 +2831,7 @@ async def get_fabric_devices_layer3_handoffs_with_ip_transit_count(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_fabric_devices_layer3_handoffs_with_sda_transit_count(
     fabricId: str, networkDeviceId: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -2878,7 +2858,7 @@ async def get_fabric_devices_layer3_handoffs_with_sda_transit_count(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_multicast_virtual_network_count(
     fabricId: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
@@ -2901,7 +2881,7 @@ async def get_multicast_virtual_network_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/multicast/virtualNetworks/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_port_channel_count(
     fabricId: Optional[str] = None,
     networkDeviceId: Optional[str] = None,
@@ -2936,7 +2916,7 @@ async def get_port_channel_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/portChannels/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_transit_networks(
     id: Optional[str] = None,
     name: Optional[str] = None,
@@ -2975,7 +2955,7 @@ async def get_transit_networks(
     return await client.request("GET", "/dna/intent/api/v1/sda/transitNetworks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_transit_networks_count(
     type: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
@@ -2998,7 +2978,7 @@ async def get_transit_networks_count(
     return await client.request("GET", "/dna/intent/api/v1/sda/transitNetworks/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_fabric_entity_summary(
     x_caller_id: Optional[str] = None,
     startTime: Optional[float] = None,
@@ -3041,7 +3021,7 @@ async def read_fabric_entity_summary(
     return await client.request("GET", "/dna/data/api/v1/fabricSummary", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_fabric_sites_with_health_summary_from_id(
     id: str,
     x_caller_id: Optional[str] = None,
@@ -3086,7 +3066,7 @@ async def read_fabric_sites_with_health_summary_from_id(
     return await client.request("GET", f"/dna/data/api/v1/fabricSiteHealthSummaries/{id}", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def read_transit_networks_count(
     x_caller_id: Optional[str] = None,
     startTime: Optional[float] = None,
@@ -3125,7 +3105,7 @@ async def read_transit_networks_count(
     return await client.request("GET", "/dna/data/api/v1/transitNetworkHealthSummaries/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def the_trend_analytics_data_for_a_fabric_site_in_the_specified_time_range(
     id: str,
     trendInterval: str,
@@ -3180,7 +3160,7 @@ async def the_trend_analytics_data_for_a_fabric_site_in_the_specified_time_range
     return await client.request("GET", f"/dna/data/api/v1/fabricSiteHealthSummaries/{id}/trendAnalytics", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def the_trend_analytics_data_for_a_virtual_network_in_the_specified_time_range(
     id: str,
     trendInterval: str,
@@ -3235,7 +3215,7 @@ async def the_trend_analytics_data_for_a_virtual_network_in_the_specified_time_r
     return await client.request("GET", f"/dna/data/api/v1/virtualNetworkHealthSummaries/{id}/trendAnalytics", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_authentication_profile(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update authentication profile.
@@ -3251,7 +3231,7 @@ async def update_authentication_profile(request_body: Dict[str, Any]) -> Optiona
     return await client.request("PUT", "/dna/intent/api/v1/sda/authenticationProfiles", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_extranet_policy(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update extranet policy.
@@ -3267,7 +3247,7 @@ async def update_extranet_policy(request_body: Dict[str, Any]) -> Optional[Dict[
     return await client.request("PUT", "/dna/intent/api/v1/sda/extranetPolicies", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_multicast(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update multicast.
@@ -3283,7 +3263,7 @@ async def update_multicast(request_body: Dict[str, Any]) -> Optional[Dict[str, A
     return await client.request("PUT", "/dna/intent/api/v1/sda/multicast", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_transit_networks(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update transit networks.

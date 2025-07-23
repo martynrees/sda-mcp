@@ -1,7 +1,4 @@
-from mcp_instance import mcp  # Import the shared instance
-from apis.sda import *
-from apis.task import *
-from apis.devices import *
+from agents.router import router_agent
 from client import *
 
 
@@ -13,7 +10,7 @@ if __name__ == "__main__":
         import uvicorn
 
         # Run as HTTP server for testing
-        uvicorn.run(mcp.app, host="0.0.0.0", port=8000)
+        uvicorn.run(router_agent.app, host="0.0.0.0", port=8000)
     else:
         # Initialize and run the MCP server
-        mcp.run(transport="stdio")
+        router_agent.run(transport="stdio")

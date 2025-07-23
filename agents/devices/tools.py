@@ -1,10 +1,12 @@
 from typing import Any, Dict, List, Optional
 
 from client import client_manager
-from mcp_instance import mcp
+from mcp_instance import create_mcp_instance
+
+agent = create_mcp_instance("DevicesAgent")
 
 
-@mcp.tool()
+@agent.tool()
 async def update_health_score_definitions(
     request_body: Dict[str, Any], x_caller_id: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -29,7 +31,7 @@ async def update_health_score_definitions(
     return await client.request("POST", "/dna/intent/api/v1/healthScoreDefinitions/bulkUpdate", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_device_by_id(id: str, clean_config: Optional[bool] = None) -> Optional[Dict[str, Any]]:
     """
     Delete a non-provisioned network device by its ID.
@@ -52,7 +54,7 @@ async def delete_device_by_id(id: str, clean_config: Optional[bool] = None) -> O
     return await client.request("DELETE", f"/dna/intent/api/v1/network-device/{id}", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_by_id(id: str) -> Optional[Dict[str, Any]]:
     """
     Get network device details for a given device ID.
@@ -67,7 +69,7 @@ async def get_device_by_id(id: str) -> Optional[Dict[str, Any]]:
     return await client.request("GET", f"/dna/intent/api/v1/network-device/{id}")
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_list(
     hostname: Optional[List[str]] = None,
     management_ip_address: Optional[List[str]] = None,
@@ -223,7 +225,7 @@ async def get_device_list(
     return await client.request("GET", "/dna/intent/api/v1/network-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def add_device(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Add a device to the inventory using its credentials.
@@ -239,7 +241,7 @@ async def add_device(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return await client.request("POST", "/dna/intent/api/v1/network-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_device_details(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update details for one or more devices and trigger an inventory sync.
@@ -255,7 +257,7 @@ async def update_device_details(request_body: Dict[str, Any]) -> Optional[Dict[s
     return await client.request("PUT", "/dna/intent/api/v1/network-device", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_global_resync_interval(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Update the global resync interval for devices without a custom interval.
@@ -271,7 +273,7 @@ async def update_global_resync_interval(request_body: Dict[str, Any]) -> Optiona
     return await client.request("PUT", "/dna/intent/api/v1/networkDevices/resyncIntervalSettings", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_network_devices_count(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Get the total number of Network Devices based on complex filters.
@@ -287,7 +289,7 @@ async def get_network_devices_count(request_body: Dict[str, Any]) -> Optional[Di
     return await client.request("POST", "/dna/data/api/v1/networkDevices/query/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def update_planned_access_point_for_floor(
     floor_id: str, request_body: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
@@ -310,7 +312,7 @@ async def update_planned_access_point_for_floor(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_planned_access_points_for_floor(
     floor_id: str,
     limit: Optional[int] = None,
@@ -348,7 +350,7 @@ async def get_planned_access_points_for_floor(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def create_planned_access_point_for_floor(
     floor_id: str, request_body: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
@@ -371,7 +373,7 @@ async def create_planned_access_point_for_floor(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_health(
     device_role: Optional[str] = None,
     site_id: Optional[str] = None,
@@ -419,7 +421,7 @@ async def get_device_health(
     return await client.request("GET", "/dna/intent/api/v1/device-health", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_network_device_interface_count(
     start_time: Optional[int] = None,
     end_time: Optional[int] = None,
@@ -479,7 +481,7 @@ async def get_network_device_interface_count(
     return await client.request("GET", "/dna/data/api/v1/interfaces/count", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def delete_network_device_with_cleanup(request_body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Delete a network device after performing configuration cleanup on it.
@@ -495,7 +497,7 @@ async def delete_network_device_with_cleanup(request_body: Dict[str, Any]) -> Op
     return await client.request("POST", "/dna/intent/api/v1/networkDevices/deleteWithCleanup", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_inventory_insight_device_link_mismatch(
     site_id: str,
     category: str,
@@ -541,10 +543,12 @@ async def get_inventory_insight_device_link_mismatch(
 from typing import Any, Dict, Optional
 
 from client import client_manager
-from mcp_instance import mcp
+from mcp_instance import create_mcp_instance
+
+agent = create_mcp_instance("DevicesAgent")
 
 
-@mcp.tool()
+@agent.tool()
 async def count_the_number_of_network_devices_with_filters(
     request_body: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
@@ -564,7 +568,7 @@ async def count_the_number_of_network_devices_with_filters(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_the_details_of_physical_components_of_the_given_device(
     deviceUuid: str, type: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -591,7 +595,7 @@ async def get_the_details_of_physical_components_of_the_given_device(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_config_by_id(
     networkDeviceId: str,
 ) -> Optional[Dict[str, Any]]:
@@ -610,7 +614,7 @@ async def get_device_config_by_id(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def update_interface_details(
     interfaceUuid: str,
     request_body: Dict[str, Any],
@@ -640,7 +644,7 @@ async def update_interface_details(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_resync_interval_for_the_network_device(
     id: str,
 ) -> Optional[Dict[str, Any]]:
@@ -659,7 +663,7 @@ async def get_resync_interval_for_the_network_device(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def update_resync_interval_for_the_network_device(
     id: str, request_body: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
@@ -682,7 +686,7 @@ async def update_resync_interval_for_the_network_device(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def legit_operations_for_interface(
     interfaceUuid: str,
 ) -> Optional[Dict[str, Any]]:
@@ -701,7 +705,7 @@ async def legit_operations_for_interface(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_config_count() -> Optional[Dict[str, Any]]:
     """
     Get Device Config Count.
@@ -713,7 +717,7 @@ async def get_device_config_count() -> Optional[Dict[str, Any]]:
     return await client.request("GET", "/dna/intent/api/v1/network-device/config/count")
 
 
-@mcp.tool()
+@agent.tool()
 async def retrieves_the_total_number_of_dhcp_services_for_given_set_of_complex_filters(
     request_body: Dict[str, Any], x_caller_id: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -740,7 +744,7 @@ async def retrieves_the_total_number_of_dhcp_services_for_given_set_of_complex_f
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_device_interface_vlans(
     id: str, interfaceType: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:
@@ -767,7 +771,7 @@ async def get_device_interface_vlans(
     )
 
 
-@mcp.tool()
+@agent.tool()
 async def get_details_of_a_single_network_device(
     id: str, views: Optional[str] = None
 ) -> Optional[Dict[str, Any]]:

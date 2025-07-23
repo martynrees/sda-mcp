@@ -1,6 +1,8 @@
 from typing import Any, Dict, Optional
 
-from mcp_instance import mcp
+from mcp_instance import create_mcp_instance
+
+agent = create_mcp_instance("TaskAgent")
 from client import client_manager
 
 # Task Management Tools
@@ -47,7 +49,7 @@ def extract_task_id_from_response(response: Dict[str, Any]) -> Optional[str]:
     return None
 
 
-@mcp.tool()
+@agent.tool()
 async def execute_and_monitor_task(
     operation_name: str, operation_func, *args, auto_wait: bool = True, max_wait_seconds: int = 300, **kwargs
 ) -> str:
@@ -98,7 +100,7 @@ async def execute_and_monitor_task(
         return f"Error executing {operation_name}: {str(e)}"
 
 
-@mcp.tool()
+@agent.tool()
 async def get_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
     """Get task details by task ID
 
@@ -116,7 +118,7 @@ async def get_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
     return await client.request("GET", f"/dna/intent/api/v1/task/{task_id}", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def get_tasks(
     offset: Optional[int] = None,
     limit: Optional[int] = None,
@@ -175,7 +177,7 @@ async def get_tasks(
     return await client.request("GET", f"/dna/intent/api/v1/tasks", **kwargs)
 
 
-@mcp.tool()
+@agent.tool()
 async def check_task_status(task_id: str) -> str:
     """Check the status of a task and return a human-readable summary
 
@@ -247,7 +249,7 @@ async def check_task_status(task_id: str) -> str:
     return summary.strip()
 
 
-@mcp.tool()
+@agent.tool()
 async def wait_for_task_completion(task_id: str, max_wait_seconds: int = 300, check_interval_seconds: int = 5) -> str:
     """Wait for a task to complete and return the final status
 
@@ -292,7 +294,7 @@ async def wait_for_task_completion(task_id: str, max_wait_seconds: int = 300, ch
     return f"Timeout: Task {task_id} did not complete within {max_wait_seconds} seconds (waited {elapsed_time:.1f}s)"
 
 
-@mcp.tool()
+@agent.tool()
 async def get_recent_failed_tasks(limit: int = 10) -> str:
     """Get recent failed tasks for troubleshooting
 

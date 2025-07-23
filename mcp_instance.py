@@ -3,5 +3,6 @@
 
 from mcp.server.fastmcp import FastMCP
 
-# Single global MCP instance
-mcp = FastMCP("CatC-MCP")
+def create_mcp_instance(name: str) -> FastMCP:
+    """Creates and returns a new FastMCP instance."""
+    return FastMCP(name)
